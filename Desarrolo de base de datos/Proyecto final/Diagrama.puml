@@ -1,0 +1,221 @@
+@startuml Diagram final
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' --- MÓDULO A: GESTIÓN ADMINISTRATIVA Y RRHH ---
+package "Gestión Administrativa y RRHH" {
+  entity "roles" as roles {
+    *id : INT <<PK>>
+    --
+    nombre : VARCHAR(50)
+  }
+
+  entity "empleados" as empleados {
+    *id : INT <<PK>>
+    --
+    *rol_id : INT <<FK>>
+    nombre : VARCHAR(100)
+    apellido : VARCHAR(100)
+    email : VARCHAR(150)
+    password_hash : VARCHAR(255)
+  }
+
+  entity "turnos" as turnos {
+    *id : INT <<PK>>
+    --
+    *empleado_id : INT <<FK>>
+    dia_semana : ENUM
+    hora_inicio : TIME
+    hora_fin : TIME
+  }
+}
+
+' --- MÓDULO B: PACIENTES Y CLIENTES ---
+package "Gestión de Pacientes" {
+  entity "duenos" as duenos {
+    *id : INT <<PK>>
+    --
+    nombre : VARCHAR(100)
+    apellido : VARCHAR(100)
+    email : VARCHAR(150)
+    telefono : VARCHAR(20)
+  }
+
+  entity "mascotas" as mascotas {
+    *id : INT <<PK>>
+    --
+    *dueno_id : INT <<FK>>
+    *especie_id : INT <<FK>>
+    *raza_id : INT <<FK>>
+    nombre : VARCHAR(100)
+    microchip_id : VARCHAR(50)
+    genero : ENUM
+  }
+
+  entity "especies" as especies {
+    *id : INT <<PK>>
+    --
+    nombre : VARCHAR(50)
+  }
+
+  entity "razas" as razas {
+    *id : INT <<PK>>
+    --
+    *especie_id : INT <<FK>>
+    nombre : VARCHAR(100)
+  }
+}
+
+' --- MÓDULO C: GESTIÓN MÉDICA ---
+package "Gestión Médica" {
+  entity "historias_clinicas" as historias {
+    *id : INT <<PK>>
+    --
+    *mascota_id : INT <<FK>>
+    fecha_creacion : TIMESTAMP
+  }
+
+  entity "citas" as citas {
+    *id : INT <<PK>>
+    --
+    *mascota_id : INT <<FK>>
+    *veterinario_id : INT <<FK>>
+    fecha_cita : DATETIME
+    estado : ENUM
+  }
+
+  entity "consultas" as consultas {
+    *id : INT <<PK>>
+    --
+    *cita_id : INT <<FK>>
+    *historia_clinica_id : INT <<FK>>
+    diagnostico : TEXT
+    temperatura : DECIMAL
+  }
+
+  entity "cirugias" as cirugias {
+    *id : INT <<PK>>
+    --
+    *consulta_id : INT <<FK>>
+    nombre_procedimiento : VARCHAR
+    resultado : TEXT
+  }
+
+  entity "vacunas" as vacunas {
+    *id : INT <<PK>>
+    --
+    nombre : VARCHAR(100)
+    intervalo_dias_defecto : INT
+  }
+
+  entity "registros_vacunacion" as reg_vac {
+    *id : INT <<PK>>
+    --
+    *mascota_id : INT <<FK>>
+    *vacuna_id : INT <<FK>>
+    *veterinario_id : INT <<FK>>
+    fecha_administracion : DATE
+  }
+}
+
+' --- MÓDULO D: LOGÍSTICA Y VENTAS ---
+package "Logística y Facturación" {
+  entity "proveedores" as proveedores {
+    *id : INT <<PK>>
+    --
+    nombre_empresa : VARCHAR
+  }
+
+  entity "categorias" as categorias {
+    *id : INT <<PK>>
+    --
+    nombre : VARCHAR
+  }
+
+  entity "productos" as productos {
+    *id : INT <<PK>>
+    --
+    *categoria_id : INT <<FK>>
+    *proveedor_id : INT <<FK>>
+    nombre : VARCHAR
+    sku : VARCHAR
+    stock_actual : INT
+    precio_venta : DECIMAL
+  }
+
+  entity "movimientos_stock" as movimientos {
+    *id : INT <<PK>>
+    --
+    *producto_id : INT <<FK>>
+    tipo : ENUM
+    cantidad : INT
+  }
+
+  entity "facturas" as facturas {
+    *id : INT <<PK>>
+    --
+    *dueno_id : INT <<FK>>
+    *metodo_pago_id : INT <<FK>>
+    monto_total : DECIMAL
+    estado : ENUM
+  }
+
+  entity "lineas_factura" as lineas {
+    *id : INT <<PK>>
+    --
+    *factura_id : INT <<FK>>
+    *producto_id : INT <<FK>>
+    cantidad : INT
+    subtotal : DECIMAL
+  }
+  
+  entity "metodos_pago" as pagos {
+      *id : INT <<PK>>
+      --
+      nombre: VARCHAR
+  }
+}
+
+' --- RELACIONES ---
+
+' RRHH
+roles ||..o{ empleados : "tiene"
+empleados ||..o{ turnos : "asigna"
+
+' Pacientes
+duenos ||..o{ mascotas : "posee"
+especies ||..o{ razas : "clasifica"
+especies ||..o{ mascotas : "tipo"
+razas ||..o{ mascotas : "raza"
+
+' Médica
+mascotas ||..o{ citas : "solicita"
+empleados ||..o{ citas : "atiende"
+mascota ||..|| historias : "tiene 1"
+citas |o..|| consultas : "genera"
+historias ||..o{ consultas : "registra"
+consultas ||..o{ cirugias : "deriva"
+mascotas ||..o{ reg_vac : "recibe"
+vacunas ||..o{ reg_vac : "aplicada en"
+empleados ||..o{ reg_vac : "administra"
+
+' Logística
+proveedores ||..o{ productos : "suministra"
+categorias ||..o{ productos : "agrupa"
+productos ||..o{ movimientos : "genera"
+
+' Ventas
+duenos ||..o{ facturas : "paga"
+pagos ||..o{ facturas : "usa"
+facturas ||..|{ lineas : "contiene"
+productos ||..o{ lineas : "listado en"
+
+@enduml
