@@ -1,0 +1,69 @@
+@startuml   Diagrama de Casos de Uso - Sistema SGO-KFP
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' --- 1. JERARQUÍA DE ACTORES ---
+actor "Usuario (Abstracto)" as Usuario
+actor "Colaboradororador Operativo" as Colaborador
+actor "Supervisorervisor de Área" as Supervisor
+actor "Administrador" as Admin
+
+Usuario <|-- Colaborador
+Usuario <|-- Supervisor
+Usuario <|-- Admin
+
+' --- 2. SISTEMA SGO-KFP ---
+package "Sistema SGO-KFP (Kung Food Panda)" {
+
+    ' --- MÓDULO DE ACCESO ---
+    usecase "Iniciar Sesión" as UC_Login
+    usecase "Recuperar Contraseña" as UC_Recover
+    Usuario -- UC_Login
+    UC_Login <.. UC_Recover : <<Extiende>>
+
+    ' --- MÓDULO OPERATIVO (Colaboradororador) ---
+    usecase "Registrar Incidencia" as UC_RegInc
+    usecase "Consultar Mis Incidencias" as UC_ConsPropia
+    usecase "Anular Incidencia" as UC_Anular
+    usecase "Registrar Descargo" as UC_Descargo
+    
+    Colaborador -- UC_RegInc
+    Colaborador -- UC_ConsPropia
+    
+    ' Relaciones Operativas
+    UC_ConsPropia <.. UC_Anular : <<Extiende>>
+    UC_ConsPropia <.. UC_Descargo : <<Extiende>>
+
+    ' --- MÓDULO DE GESTIÓN (Supervisorervisor) ---
+    usecase "Visualizar Dashboard de Carga" as UC_Dash
+    usecase "Redistribuir Personal" as UC_Reasignar
+    usecase "Resolver Disputa" as UC_Resolver
+    usecase "Escalar a Administración" as UC_Escalar
+    
+    Supervisor -- UC_Dash
+    Supervisor -- UC_Resolver
+    
+    ' Relaciones de Gestión
+    UC_Dash <.. UC_Reasignar : <<Extiende>>
+    UC_Resolver <.. UC_Escalar : <<Extiende>>
+
+    ' --- MÓDULO DE ADMINISTRACIÓN ---
+    usecase "Consultar Log de Auditoría" as UC_Audit
+    usecase "Gestionar Usuarios" as UC_ABM_Usuario
+    
+    Admin -- UC_Audit
+    Admin -- UC_ABM_Usuario
+    
+    ' Conexión de escalamiento
+    UC_Escalar -- Admin
+}
+
+@enduml

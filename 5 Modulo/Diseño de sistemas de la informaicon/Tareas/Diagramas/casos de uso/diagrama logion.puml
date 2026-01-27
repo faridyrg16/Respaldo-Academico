@@ -1,0 +1,47 @@
+@startuml   Login
+' Configuración visual
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' 1. Definición de Actores
+' Actor Padre (Abstracto: no existe físicamente, pero agrupa características)
+actor "Usuario / Personal" as User
+
+' Actores Hijos (Los roles reales)
+actor "Colaborador Operativo" as Colab
+actor "Supervisor de Área" as Sup
+actor "Administrador" as Admin
+
+' 2. Relaciones de Herencia (Generalización)
+' El Colaborador ES UN Usuario, el Admin ES UN Usuario, etc.
+User <|-- Colab
+User <|-- Sup
+User <|-- Admin
+
+package "Sistema Kung Food Panda" {
+    ' 3. Casos de Uso
+    usecase "Iniciar Sesión" as Login
+    usecase "Recuperar Contraseña" as Recover
+    usecase "Validar Credenciales" as Validate
+
+    ' 4. Relaciones del Diagrama
+    ' Conectamos solo al Padre con el caso de uso
+    User -- Login
+
+    ' Relaciones avanzadas
+    ' Extend: Recuperar contraseña es opcional, solo si la olvida.
+    Login <.. Recover : <<Extiende>>
+    
+    ' Include: Para iniciar sesión, OBLIGATORIAMENTE el sistema valida credenciales (invisible al usuario, pero parte del proceso)
+    Login ..> Validate : <<Incluye>>
+}
+
+@enduml

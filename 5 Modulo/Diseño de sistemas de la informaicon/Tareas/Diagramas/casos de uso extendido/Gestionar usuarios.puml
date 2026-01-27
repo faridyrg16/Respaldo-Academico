@@ -1,0 +1,76 @@
+@startuml Gestionar Usuarios (CU-08)
+title Diagrama de Actividad: Gestionar Usuarios (CU-08)
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' Carriles
+|#Purple|Administrador|
+start
+:Accede al módulo "Administración de Personal";
+
+|#LightBlue|Sistema|
+:Cargar lista de usuarios existentes;
+:Mostrar barra de herramientas (Nuevo, Editar, Desactivar);
+
+|Administrador|
+if (¿Qué acción desea realizar?) then (Crear Nuevo Usuario)
+    :Seleccionar "Nuevo Usuario";
+    :Ingresar Datos Personales (Nombre, DNI, Correo);
+    :Seleccionar **ROL** (Colaborador, Supervisor, Admin);
+    note right
+      Crítico: El rol define qué podrá
+      ver este usuario en el sistema.
+    end note
+    
+    |Sistema|
+    :Validar formato de correo y DNI;
+    
+    ' Regla de Unicidad
+    if (¿Ya existe el DNI o Correo?) then (Sí)
+        :Mostrar Error: "Usuario ya registrado";
+        stop
+    else (No)
+        :Generar Contraseña Temporal Segura;
+        :Encriptar Contraseña (Hash);
+        :Guardar Registro con estado **ACTIVO**;
+        :Enviar credenciales por correo electrónico;
+    endif
+
+elseif (Modificar / Dar de Baja)
+    :Buscar y seleccionar usuario existente;
+    
+    if (¿Desea Editar Datos?) then (Sí)
+        :Modificar campos permitidos (Rol, Área, Teléfono);
+        |Sistema|
+        :Actualizar registro en BD;
+    else (Dar de Baja)
+        :Presionar "Desactivar Usuario";
+        note right
+          Se usa para despidos o renuncias.
+        end note
+        
+        |Sistema|
+        :Verificar que no sea el propio Admin (Autobloqueo);
+        
+        ' Regla de Baja Lógica
+        :Cambiar estado a **INACTIVO**;
+        note left
+          NO se borra el registro (DELETE).
+          Se mantiene para auditoría histórica.
+        end note
+        
+        :Cerrar sesiones activas de ese usuario;
+    endif
+endif
+
+:Mostrar mensaje de éxito;
+:Actualizar listado de usuarios;
+stop
+
+@enduml

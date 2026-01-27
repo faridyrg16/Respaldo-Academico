@@ -1,0 +1,85 @@
+@startuml Diagrama_Logico
+title Diagrama Lógico - Sistema de Gestión para Agencia de Viajes
+!theme blueprint
+skinparam dpi 300
+skinparam linetype ortho
+hide circle
+
+entity SUCURSALES {
+codigo_sucursal : INT [PK]
+--
+direccion : VARCHAR(255)
+telefono : VARCHAR(20)
+}
+
+entity TURISTAS {
+codigo_turista : INT [PK]
+--
+nombre : VARCHAR(100)
+apellidos : VARCHAR(150)
+direccion : VARCHAR(255)
+telefono : VARCHAR(20)
+codigo_sucursal_registro : INT [FK]
+}
+
+entity VUELOS {
+numero_vuelo : VARCHAR(10) [PK]
+--
+fecha : DATE
+hora : TIME
+origen : VARCHAR(100)
+destino : VARCHAR(100)
+plazas_totales : INT
+plazas_disponibles : INT
+}
+
+entity HOTELES {
+codigo_hotel : INT [PK]
+--
+nombre : VARCHAR(150)
+ciudad : VARCHAR(100)
+telefono : VARCHAR(20)
+habitaciones_totales : INT
+habitaciones_disponibles : INT
+}
+
+entity RESERVAS_VUELOS {
+id_reserva_vuelo : INT [PK]
+--
+codigo_turista : INT [FK]
+numero_vuelo : VARCHAR(10) [FK]
+fecha_reserva : DATETIME
+numero_asiento : VARCHAR(4)
+}
+
+entity RESERVAS_HOTELES {
+id_reserva_hotel : INT [PK]
+--
+codigo_turista : INT [FK]
+codigo_hotel : INT [FK]
+fecha_entrada : DATE
+fecha_salida : DATE
+tipo_habitacion : VARCHAR(50)
+}
+
+entity PAQUETES_TURISTICOS {
+id_paquete : INT [PK]
+--
+nombre_paquete : VARCHAR(200)
+numero_vuelo : VARCHAR(10) [FK]
+codigo_hotel : INT [FK]
+descripcion : TEXT
+precio : DECIMAL(10, 2)
+}
+
+' --- Definición de Relaciones ---
+
+SUCURSALES "1" -- "N" TURISTAS : "registra a"
+TURISTAS "1" -- "N" RESERVAS_VUELOS : "realiza"
+VUELOS "1" -- "N" RESERVAS_VUELOS : "contiene"
+TURISTAS "1" -- "N" RESERVAS_HOTELES : "realiza"
+HOTELES "1" -- "N" RESERVAS_HOTELES : "contiene"
+VUELOS "1" -- "N" PAQUETES_TURISTICOS : "forma parte de"
+HOTELES "1" -- "N" PAQUETES_TURISTICOS : "forma parte de"
+
+@enduml

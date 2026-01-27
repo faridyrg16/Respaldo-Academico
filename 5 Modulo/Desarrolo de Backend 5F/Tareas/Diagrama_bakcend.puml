@@ -1,0 +1,37 @@
+@startuml 09_diagrama
+skinparam dpi 160
+skinparam backgroundColor #ffffffff
+skinparam handwritten false
+
+skinparam rectangle {
+  BackgroundColor #ffffffff
+  BorderColor #ff0000ff
+}
+
+skinparam actor {
+  BackgroundColor #ffffffff
+  BorderColor #740097ff
+}
+
+skinparam database {
+  BackgroundColor #516fc0ff
+  BorderColor #1a60bbff
+}
+
+actor "Navegador Web (Frontend)" as Frontend
+
+rectangle "Aplicación Web (Backend)" {
+  rectangle "Servidor Web" as ServidorWeb
+  rectangle "Framework /Lógica de Negocio" as LogicaApp
+  database "Base de Datos" as Basededatos
+  rectangle "Servicios Externos" as ExternalServices
+}
+
+Frontend --> ServidorWeb : Solicita
+ServidorWeb --> LogicaApp : Procesa solicitud
+LogicaApp --> Basededatos : Almacena/Consulta datos
+LogicaApp --> ExternalServices : Interactúa con API
+ExternalServices --> Basededatos : [Ej: Pago, Correo]
+ServidorWeb <-- LogicaApp : Responde con datos
+
+@enduml

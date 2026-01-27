@@ -1,0 +1,41 @@
+@startuml Resolver Disputa
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+actor "Supervisor de Área" as Sup
+actor "Administrador" as Admin
+
+package "Gestión de Conflictos" {
+    
+    usecase "Resolver Disputa" as UC_Resolver
+    usecase "Visualizar Comparativa (Reporte vs Descargo)" as UC_Comparar
+    usecase "Registrar Dictamen Final" as UC_Dictamen
+    usecase "Escalar a Administración" as UC_Escalar
+
+    ' Relación Principal
+    Sup -- UC_Resolver
+
+    ' 1. INCLUDE: Para resolver, es OBLIGATORIO ver las dos caras de la moneda.
+    ' El sistema muestra la incidencia y el descargo lado a lado.
+    UC_Resolver ..> UC_Comparar : <<Incluye>>
+
+    ' 2. INCLUDE: Resolver implica escribir una conclusión y sentencia.
+    UC_Resolver ..> UC_Dictamen : <<Incluye>>
+
+    ' 3. EXTEND: Si el supervisor no puede resolverlo (ej. conflicto de intereses o gravedad),
+    ' escala el problema al Administrador.
+    UC_Resolver <.. UC_Escalar : <<Extiende>>
+    
+    ' Si se escala, el Administrador entra en juego
+    UC_Escalar -- Admin
+}
+
+@enduml

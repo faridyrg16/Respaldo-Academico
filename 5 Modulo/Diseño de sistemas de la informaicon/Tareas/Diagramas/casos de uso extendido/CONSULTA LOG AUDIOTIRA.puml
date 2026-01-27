@@ -1,0 +1,77 @@
+@startuml Consultar Log de Auditoría (CU-09)
+title Diagrama de Actividad: Consultar Log de Auditoría (CU-09)
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' Carriles
+|#Purple|Administrador|
+start
+:Accede al módulo "Auditoría del Sistema";
+
+|#LightBlue|Sistema|
+:Cargar registros de los últimos 30 días (Default);
+note right
+  Por rendimiento, no se cargan todos
+  los registros históricos de golpe.
+end note
+:Mostrar listado con columnas:
+Fecha, Actor, Acción, IP, Resultado.
+
+|Administrador|
+:Analizar el listado;
+
+' Bucle de Filtrado (Esencial para encontrar algo específico)
+repeat
+    if (¿Necesita buscar un evento específico?) then (Sí)
+        :Seleccionar Filtros Avanzados;
+        note left
+          Ej: Filtrar por "Supervisor X"
+          o acciones de tipo "Anular Incidencia".
+        end note
+        
+        :Ingresar rango de fechas;
+        :Presionar "Buscar";
+        
+        |Sistema|
+        :Ejecutar consulta en BD (Log Table);
+        :Actualizar resultados en pantalla;
+        |Administrador|
+    else (No, ya veo lo que busco)
+        break
+    endif
+repeat while (¿Refinar búsqueda?)
+
+' Acción sobre el registro
+:Seleccionar un registro específico para ver detalle;
+
+|Sistema|
+:Mostrar "Snapshot" del evento;
+note right
+  Muestra el valor ANTES y
+  el valor DESPUÉS del cambio.
+end note
+
+|Administrador|
+if (¿Requiere evidencia externa?) then (Sí, Exportar)
+    :Presionar botón "Exportar Reporte";
+    :Seleccionar formato (PDF / Excel);
+    
+    |Sistema|
+    :Generar archivo sellado;
+    :Descargar archivo al dispositivo del Admin;
+    
+    ' Meta-Auditoría (Vigilar al vigilante)
+    :Registrar en el Log que el Admin exportó datos;
+else (No)
+    ' Solo lectura
+endif
+
+stop
+
+@enduml

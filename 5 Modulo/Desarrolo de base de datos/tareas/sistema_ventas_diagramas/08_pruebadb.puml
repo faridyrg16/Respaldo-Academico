@@ -1,0 +1,57 @@
+@startuml 'demo'
+!theme blueprint
+skinparam dpi 300
+skinparam linetype ortho
+hide circle
+
+entity "Usuario" {
+  *IdUsuario : int [PK]
+  --
+  Cuenta : string
+  Contraseña : string
+  Perfil : string
+  Estado : string
+}
+entity "Sesión" {
+  *IdSesión : int [PK]
+  --
+  IdUsuario : int [FK]
+  Fecha_inicio : date
+  Hora_inicio : time
+  Fecha_cierre : date
+  Hora_cierre : time
+  Estado : string
+}
+entity "Rol" {
+  *IdRol : int [PK]
+  --
+  Nombre : string
+  Descripción : string
+}
+entity "Permiso" {
+  *IdPermiso : int [PK]
+  --
+  Nombre : string
+  Descripción : string
+}
+
+entity "Actividad" {
+  *IdActividad : int [PK]
+  --
+  IdUsuario : int [FK]
+  Fecha : date
+  Descripción : string
+}
+
+entity "Bitácora" {
+  *IdRegistro : int [PK]
+  --
+  IdSesion : int [FK]
+  Acción : string
+  Fecha : date
+}
+Usuario ||--|{ Sesión : "Establece la sesión"
+Usuario ||--o{ Actividad : "Realiza"
+Sesion ||--o{ Bitácora : "Genera"
+Rol ||--o{ Permiso : "Incluye"
+@enduml

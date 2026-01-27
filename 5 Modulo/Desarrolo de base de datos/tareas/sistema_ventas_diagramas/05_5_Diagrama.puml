@@ -1,0 +1,60 @@
+@startuml Biblioteca
+title Sistema de Gestión para una Biblioteca
+!theme blueprint
+skinparam dpi 80
+skinparam linetype ortho
+skinparam ranksep 60
+skinparam nodesep 80
+hide circle
+
+' --- Entidades Principales ---
+entity "Libro" as Libro {
+  + **ISBN** (PK)
+  --
+  título
+  año_publicación
+  estado
+}
+
+entity "Autor" as Autor {
+  + **id_autor** (PK)
+  --
+  nombre
+  nacionalidad
+  fecha_nacimiento
+}
+
+entity "Miembro" as Miembro {
+  + **id_miembro** (PK)
+  --
+  nombre
+  dirección
+  numero_teléfono
+}
+
+' Entidad para el Préstamo 
+entity "Prestamo" as Prestamo {
+  + **id_prestamo** (PK)
+  --
+  + ISBN (FK)
+  + id_miembro (FK)
+  fecha_inicio
+  fecha_devolucion
+}
+
+' Entidad Asociativa para N:M Libro-Autor [cite: 238, 254]
+entity "Escrito_Por" as Escrito_Por {
+ + **id_escrito_por** (PK)
+ --
+ + ISBN (FK)
+ + id_autor (FK)
+}
+
+' --- Relaciones ---
+Libro "1" -- "0..*" Escrito_Por : es_escrito_por
+Autor "0..*" -- "1..*" Escrito_Por : escribe
+
+Miembro "1" -- "0..*" Prestamo : realiza
+Libro "1" -- "0..*" Prestamo : tiene_prestamos
+
+@enduml

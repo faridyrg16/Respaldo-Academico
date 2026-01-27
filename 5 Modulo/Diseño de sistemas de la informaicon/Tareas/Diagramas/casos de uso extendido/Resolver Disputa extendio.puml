@@ -1,0 +1,70 @@
+@startuml Resolver Disputa extendio cu-06
+title Diagrama de Actividad: Resolver Disputa (CU-06)
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' Carriles
+|#Orange|Supervisor de Área|
+start
+:Selecciona una incidencia en estado **"EN DISPUTA"**;
+
+|#LightBlue|Sistema|
+:Recuperar datos de la Incidencia;
+:Recuperar Descargo y Evidencias del Colaborador;
+:Mostrar **Vista Comparativa** (Reporte vs. Defensa);
+
+|Supervisor de Área|
+:Analizar evidencias y argumentos;
+
+' Decisión Principal: ¿Qué hago con esto?
+if (¿Puede resolverlo en su nivel?) then (No, es muy grave)
+    :Seleccionar opción **"Escalar a Administración"**;
+    :Ingresar motivo del escalamiento;
+    
+    |Sistema|
+    :Cambiar estado a **"ESCALADO"**;
+    :Asignar responsabilidad al rol "Administrador";
+    :Notificar al Admin;
+    stop
+else (Sí, tomar decisión)
+    |Supervisor de Área|
+    :Redactar **Dictamen Final** (Justificación);
+    
+    ' Bifurcación del veredicto
+    if (¿Acepta el descargo del empleado?) then (Sí, Absolución)
+        :Marcar como **"RESUELTO - A FAVOR"**;
+        note right
+          No se aplica sanción.
+          La incidencia se cierra.
+        end note
+    else (No, Sanción)
+        :Marcar como **"RESUELTO - EN CONTRA"**;
+        note right
+          Se confirma la falta.
+          Se aplica sanción según reglamento.
+        end note
+    endif
+    
+    :Confirmar Resolución;
+endif
+
+|Sistema|
+:Guardar Dictamen y Nuevo Estado en BD;
+:Cerrar ciclo de la incidencia (Fecha de Cierre);
+
+fork
+    :Generar entrada en Historial del Empleado;
+fork again
+    ' Feedback inmediato
+    :Notificar al Colaborador sobre la resolución;
+end fork
+
+stop
+
+@enduml

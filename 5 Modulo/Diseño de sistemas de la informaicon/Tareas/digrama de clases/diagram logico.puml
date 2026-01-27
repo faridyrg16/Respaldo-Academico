@@ -1,0 +1,92 @@
+@startuml Diagrama Logico SGO-KFP
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 10
+hide circle
+
+abstract class Usuario {
+    id_usuario 
+    dni 
+    nombre 
+    correo 
+    password_hash 
+    estado {ACTIVO, INACTIVO}
+    iniciarSesion()
+    cerrarSesion()
+}
+
+class Rol {
+    id_rol 
+    nombre {Admin, Supervisor, Operativo}
+    permisos 
+}
+
+class Incidencia {
+    id_incidencia 
+    titulo 
+    descripcion 
+    fecha_creacion 
+    prioridad {BAJA, MEDIA, ALTA, CRITICA}
+    estado_actual {PENDIENTE, EN_DISPUTA, RESUELTO, ANULADO}
+    registrar()
+    anular()
+    cambiarEstado()
+}
+
+class Categoria {
+    id_categoria 
+    nombre {Infraestructura, RRHH, Insumos}
+}
+
+class Evidencia {
+    id_evidencia 
+    archivo_url 
+    tipo {IMG, VIDEO, PDF}
+    fecha_subida 
+}
+
+class Mesa {
+    id_mesa 
+    numero 
+    zona {Primer piso, Salon, Barra, Cocina}
+}
+
+class Turno {
+    id_turno 
+    nombre {Mañana, Tarde, Noche}
+    hora_inicio 
+    hora_fin 
+}
+
+class Descargo {
+    id_descargo 
+    argumento_defensa 
+    fecha_envio 
+    estado {EN_REVISION, ACEPTADO, RECHAZADO}
+    registrar()
+}
+
+class HistorialEstado {
+    id_historial 
+    estado_anterior 
+    estado_nuevo 
+    fecha_cambio 
+    comentario_sistema
+}
+
+Usuario "1" --> "1" Rol : tiene asignado >
+Usuario "1" -- "0..*" Incidencia : reporta >
+Usuario "1" -- "0..*" Incidencia : resuelve/gestiona >
+Mesa "1" -- "0..*" Incidencia : origina <
+Categoria "1" -- "0..*" Incidencia : clasifica <
+Turno "1" -- "0..*" Incidencia : sucede durante <
+Incidencia "1" *-- "0..*" Evidencia : documenta con >
+Incidencia "1" -- "0..1" Descargo : motiva >
+Incidencia "1" *-- "1..*" HistorialEstado : genera traza en >
+Usuario "1" -- "0..*" HistorialEstado : provoca >
+
+@enduml

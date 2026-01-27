@@ -1,0 +1,46 @@
+@startuml   Consultar Incidencias
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+' Actores (mantenemos la herencia previa)
+actor "Usuario" as User
+actor "Colaborador Operativo" as Colab
+actor "Supervisor de Área" as Sup
+
+User <|-- Colab
+User <|-- Sup
+
+package "Módulo de Incidencias" {
+    usecase "Consultar Mis Incidencias" as UC_Consultar_Propia
+    usecase "Consultar Incidencias de Área" as UC_Consultar_Area
+    
+    usecase "Filtrar por Estado" as UC_Filtrar
+    usecase "Ver Detalle y Evidencia" as UC_Detalle
+    usecase "Exportar Reporte" as UC_Exportar
+
+    ' Relaciones Principales
+    ' El Colaborador solo ve las suyas
+    Colab -- UC_Consultar_Propia
+    
+    ' El Supervisor ve las del área (y por herencia podría ver las propias también)
+    Sup -- UC_Consultar_Area
+
+    ' Relaciones de Extensión (Funcionalidad opcional/enriquecida)
+    ' Al consultar, puedo querer filtrar o ver el detalle, pero no es obligatorio hacerlo siempre.
+    UC_Consultar_Propia <.. UC_Filtrar : <<Extiende>>
+    UC_Consultar_Propia <.. UC_Detalle : <<Extiende>>
+    
+    ' El supervisor tiene un caso de uso extra: Exportar
+    UC_Consultar_Area <.. UC_Exportar : <<Extiende>>
+    UC_Consultar_Area <.. UC_Detalle : <<Extiende>>
+}
+
+@enduml

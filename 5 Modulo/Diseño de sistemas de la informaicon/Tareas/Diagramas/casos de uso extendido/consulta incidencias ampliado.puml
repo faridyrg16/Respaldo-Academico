@@ -1,0 +1,77 @@
+@startuml Consultar_Mis_Incidencias_CU02
+skinparam handwritten true
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+title Diagrama de Actividad: Consultar Mis Incidencias (CU-02)
+
+' Definimos los carriles
+|#Pink|Colaborador Operativo|
+start
+:Selecciona opción "Mis Incidencias" en el menú;
+
+|#LightBlue|Sistema|
+' Paso Crítico: Seguridad
+:Identificar Usuario en sesión;
+:Consultar incidencias asociadas a este ID;
+
+' Decisión 1: ¿Hay datos?
+if (¿Se encontraron registros?) then (No)
+    :Mostrar pantalla "Sin Incidencias";
+    :Sugerir "Crear Nueva Incidencia";
+    stop
+else (Sí)
+    :Generar lista resumida;
+    note right
+      Muestra solo datos clave:
+      Fecha, Tipo, Prioridad y Estado.
+    end note
+endif
+
+' Bucle de interacción: Filtros
+|Colaborador Operativo|
+repeat
+    :Visualizar Listado;
+    
+    if (¿Desea filtrar la lista?) then (Sí, ej: Ver solo "Pendientes")
+        :Selecciona criterio de filtro;
+        |Sistema|
+        :Aplicar filtro en memoria o BD;
+        :Actualizar listado visible;
+        |Colaborador Operativo|
+    else (No, selecciona un registro)
+        break
+    endif
+repeat while (¿Sigue filtrando?)
+
+:Hacer clic en una Incidencia específica;
+
+|Sistema|
+:Recuperar información completa (ID);
+:Cargar evidencias (Fotos/Docs) si existen;
+:Cargar historial de respuestas del Supervisor;
+:Mostrar **Vista de Detalle**;
+
+|Colaborador Operativo|
+:Revisar la información;
+
+' Decisión 2: Acciones derivadas (Conexión con otros CUs)
+if (¿Desea realizar una acción?) then (Anular)
+    :Clic en "Anular Incidencia";
+    note left: Va al flujo de\nAnular Incidencia
+    stop
+elseif (Responder/Descargo)
+    :Clic en "Registrar Descargo";
+    note left: Va al flujo de\nRegistrar Descargo
+    stop
+else (Solo leer)
+    :Clic en "Volver al Listado";
+    stop
+endif
+
+@enduml

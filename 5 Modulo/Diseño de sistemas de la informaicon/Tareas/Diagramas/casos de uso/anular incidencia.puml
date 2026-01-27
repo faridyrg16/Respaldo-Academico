@@ -1,0 +1,42 @@
+@startuml  Anular Incidencia
+left to right direction
+skinparam packageStyle rectangle
+skinparam nodesep 100 
+skinparam ranksep 100
+skinparam classFontSize 12
+skinparam classFontName "Arial"
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+scale 5
+hide circle
+
+actor "Colaborador Operativo" as Colab
+
+package "Gestión de Incidencias" {
+    
+    usecase "Consultar Mis Incidencias" as UC_Consultar
+    usecase "Ver Detalle" as UC_Detalle
+    
+    ' El caso de uso solicitado
+    usecase "Anular Incidencia" as UC_Anular
+    
+    ' Regla de negocio técnica
+    usecase "Validar Estado (Pendiente/Borrador)" as UC_ValidarEstado
+
+    ' Relaciones
+    Colab -- UC_Consultar
+    
+    ' Flujo: Busco la incidencia -> Veo el detalle -> Decido anularla
+    UC_Consultar <.. UC_Detalle : <<Extiende>>
+    UC_Detalle <.. UC_Anular : <<Extiende>>
+    
+    ' Restricción OBLIGATORIA: Antes de anular, el sistema revisa si es posible
+    UC_Anular ..> UC_ValidarEstado : <<Incluye>>
+    
+    ' Nota visual para explicar la lógica en el diagrama
+    note right of UC_Anular
+      Solo se permite si el Supervisor
+      aún no ha tomado acción.
+    end note
+}
+@enduml
