@@ -56,6 +56,44 @@ void main() {
   print("Estado Civil: $estado_civil");
   print("Código: $codigo");
   print("Código 2: $codigo2");
+
+    //estructuras de control
+  //if, else if, else
+  int edad = 20;
+  if (edad < 18) {
+    print("Menor");
+  } else if (edad >= 18 && edad < 65) {
+    print("Mayor");
+  } else {
+    print("Adulto mayor");
+  }
+
+  //switch
+  String dia = "Lunes";
+  switch (dia) {
+    case "Lunes":
+    case "Viernes":
+      print("Inicio/fin");
+      break;
+    default:
+      print("Dia Laboral");
+  }
+
+  //Estructuras de repetición
+  //for
+  for (int i = 0; i < 10; i++) {
+    print(i);
+  }
+  int contador = 0;
+  while (contador < 5) {
+    print(contador);
+    contador++;
+  }
+  int num = 0;
+  do {
+    print(num);
+    num++;
+  } while (num < 10);
 }
 
 void calculadora(double num1, double num2, String operacion) {
@@ -175,4 +213,5 @@ void ramdom() {
     print(name);
   }
 }
+
 
