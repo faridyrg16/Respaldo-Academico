@@ -1,3 +1,4 @@
+import 'dart:ffi';
 void main() {
   print("hola mundo");
 
@@ -21,6 +22,20 @@ void main() {
 
   String nombreCompleto(String nombre, String apellido) {
     return "$nombre $apellido";
+    double var1 = 10.0;
+  double var2 = 5;
+  String operacion = '+';
+  double multi = var1 * var2;
+  double resta = var1 - var2;
+  double suma = var1 + var2;
+  calculadora(var1, var2, operacion);
+  print('suma: ${suma}');
+  print('resta: ${resta}');
+  print('multiplicacion: ${multi}');
+  print(var1 == var2);
+  print(var1 != var2);
+  print(var1 > var2);
+  print(var1 < var2);
   }
 
   int edad;
@@ -41,6 +56,34 @@ void main() {
   print("Estado Civil: $estado_civil");
   print("Código: $codigo");
   print("Código 2: $codigo2");
+}
+
+void calculadora(double num1, double num2, String operacion) {
+  double resultado;
+
+  switch (operacion) {
+    case '+':
+      resultado = num1 + num2;
+      break;
+    case '-':
+      resultado = num1 - num2;
+      break;
+    case '*':
+      resultado = num1 * num2;
+      break;
+    case '/':
+      if (num2 != 0) {
+        resultado = num1 / num2;
+      } else {
+        print("Error: No se puede dividir por cero.");
+        return;
+      }
+      break;
+    default:
+      print("Operación no válida.");
+      return;
+  }
+  print("El resultado de $num1 $operacion $num2 es: $resultado");
 }
 
 void mayorDeEdad() {
@@ -132,3 +175,4 @@ void ramdom() {
     print(name);
   }
 }
+
