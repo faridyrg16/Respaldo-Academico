@@ -18,10 +18,12 @@ class Persona {
 void main() {
   Persona p1 = Persona("Juan", 30, "Madrid");
   Persona p2 = Persona("Farid", 25, "Cusco");
+  Persona p3 = Persona("Yasser", 48, "Lima");
 
   print("Nombre: ${p1.name}");
   print("Edad: ${p1.age}");
   print("Ciudad: ${p1.city}");
   p1.Presentarse(p1);
   p2.saludar(p2);
+  print(p3);
 }
