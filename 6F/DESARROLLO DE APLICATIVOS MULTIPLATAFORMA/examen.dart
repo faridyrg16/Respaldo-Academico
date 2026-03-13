@@ -52,7 +52,6 @@ class Bicicleta extends Vehiculo {
 class CuentaBancaria {
   String titular;
   double saldo;
-
   CuentaBancaria(this.titular, this.saldo);
 
   void depositar(double monto) {
@@ -94,11 +93,15 @@ class Circulo extends Figura {
 
 void main() {
   print("Ingrese un número del 1 al 7 para mostrar el día de la semana:");
-  int numero = 5;
+  int numero = 7;
   mostrarDiaSemana(numero);
   /*Declara una lista de tipo List<int> con cinco números.usa un for para recorrer la lista y mostrar el cuadrado de cada número*/
   List<int> numeros = [1, 2, 3, 4, 5];
   for (int numero in numeros) {
     print("El cuadrado de $numero es ${numero * numero}");
   }
+  CuentaBancaria p1 = CuentaBancaria('farid', 500);
+  p1.depositar(200);
+  p1.retirar(100);
+  p1.retirar(800);
 }
