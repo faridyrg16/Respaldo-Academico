@@ -80,7 +80,9 @@ class Rectangulo extends Figura {
   Rectangulo(this.base, this.altura);
   @override
   double calcularArea() {
-    return base * altura;
+    double resultado = base * altura;
+    print(resultado);
+    return resultado;
   }
 }
 
@@ -89,7 +91,9 @@ class Circulo extends Figura {
   Circulo(this.radio);
   @override
   double calcularArea() {
-    return 3.1416 * radio * radio;
+    double resultado = 3.1416 * radio * radio;
+    print(resultado);
+    return resultado;
   }
 }
 
@@ -106,4 +110,8 @@ void main() {
   p1.depositar(200);
   p1.retirar(100);
   p1.retirar(800);
+  Circulo figura1 = Circulo(5);
+  Rectangulo figura2 = Rectangulo(10, 5);
+  figura1.calcularArea();
+  figura2.calcularArea();
 }
