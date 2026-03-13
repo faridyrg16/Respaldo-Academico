@@ -56,11 +56,13 @@ class CuentaBancaria {
 
   void depositar(double monto) {
     saldo += monto;
+    print(saldo);
   }
 
   void retirar(double monto) {
     if (monto <= saldo) {
       saldo -= monto;
+      print(saldo);
     } else {
       print("Fondos insuficientes.");
     }
